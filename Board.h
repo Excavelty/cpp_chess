@@ -1,6 +1,10 @@
 #pragma once
 #include <iostream>
 #include <array>
+#include "Pos.h"
+#include "Move.h"
+#include "Color.h"
+#include <cctype>
 
 class Board
 {
@@ -10,14 +14,33 @@ class Board
             init_board();
         }
 
+        bool is_empty(const Position& pos) const
+        {
+            return fields[pos.x - 'a'][pos.y - 1] == '-';
+        }
+
+        int get_color(const Position& pos) const //use wisely, no control if field is empty
+        {
+            return isupper(fields[pos.x - 'a'][pos.y - 1])? Color::WHITE : Color::BLACK;
+        }
+
         void print() const
         {
+            std::cout<<"--------\n";
             for(int j = num - 1; j >= 0; --j)
             {
+                std::cout<<"|";
                 for(int i = 0; i < num; ++i)
                     std::cout<<fields[i][j];
-                std::cout<<"\n";
+                std::cout<<"|\n";
             }
+
+            std::cout<<"--------\n";
+        }
+
+        bool is_move_allowed(const Move& move) const
+        {
+            return true; // absolutely crutial, START HERE AND APPLY FOR EVERY PIECE
         }
 
         char get(int first, int second) const
@@ -39,6 +62,11 @@ class Board
         void move(const std::string& first, const std::string& second)
         {
             set(first, second);
+        }
+
+        void move(const Position& pos1, const Position& pos2)
+        {
+            move(std::string{pos1.x} + std::to_string(pos1.y), std::string{pos2.x} + std::to_string(pos2.y));
         }
 
         std::array<std::array<char, 8>, 8> get_board() 
