@@ -16,6 +16,7 @@ class Board
 
         bool is_empty(const Position& pos) const
         {
+            std::cout<<pos.x - 'a'<<" "<<pos.y - 1<<"\n";
             return fields[pos.x - 'a'][pos.y - 1] == '-';
         }
 

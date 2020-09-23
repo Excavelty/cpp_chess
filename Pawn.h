@@ -30,14 +30,14 @@ class Pawn : public Piece
             if(board->is_empty(first_step_pos))
                 moves.push_back(Move{pos, Position{pos.x, pos.y + 1}});
 
-            if(board->is_empty(left_take_pos) && board->get_color(left_take_pos) != color)
+            if(!board->is_empty(left_take_pos) && board->get_color(left_take_pos) != color)
             {
                 Move next_move{pos, Position{left_take_pos}};
                 next_move.disallow_double_move();
                 moves.push_back(next_move);
             }
 
-            if(board->is_empty(right_take_pos) && board->get_color(right_take_pos) != color) //en passant later
+            if(!board->is_empty(right_take_pos) && board->get_color(right_take_pos) != color) //en passant later
             {
                 Move next_move{pos, Position{right_take_pos}};
                 next_move.disallow_double_move();

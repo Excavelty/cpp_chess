@@ -14,5 +14,5 @@ class NoMoveAllowed : public std::exception
         }
 
     private:
-        const std::string err_text;
+        const char* err_text;
 }
