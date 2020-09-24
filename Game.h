@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "pieces_header.h"
 #include "NoPieceFoundException.h"
+#include "NoMoveAllowed.h"
 #include <vector>
 #include <memory>
 #include <algorithm>
@@ -22,7 +23,7 @@ class Game
             for(const auto& piece : pieces) //important
             {
                 piece->set_board(board);
-                std::cout<<piece->get_sign()<<" "<<piece->get_pos()<<"\n";
+                std::cout<<piece->get_sign()<<" "<<piece->get_pos()<<" "<<piece->get_color()<<"\n";
             }
         }
 
@@ -54,8 +55,18 @@ class Game
 
                         std::shared_ptr<Piece> piece = pieces[piece_iterator - pieces.begin()];    
                         std::vector<Move> allowed_moves = piece->get_allowed_moves();
+                        auto move_iterator = std::find(allowed_moves.begin(), allowed_moves.end(), move);
+
+                        if(move_iterator == allowed_moves.end())
+                            throw NoMoveAllowedException{"This move is not allowed!"};
+
+                        std::cout<<"Possible moves: \n";
                         for(const auto& move : allowed_moves)
                             std::cout<<move<<"\n";
+
+                        piece->set_pos(move.next);
+                        board->move(move.previous, move.next);
+                        board->print();
                     }
 
                     catch(const NoPieceFoundException& exception)
@@ -64,9 +75,10 @@ class Game
                         std::cout<<current_pos;
                     }
 
-                    if(board->is_move_allowed(move))
-                        board->move(move.previous, move.next);
-                    board->print();
+                    catch(const NoMoveAllowedException& exception)
+                    {
+                        std::cout<<exception.what()<<"\n";
+                    }
                 }
             }
         }

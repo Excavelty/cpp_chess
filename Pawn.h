@@ -20,24 +20,19 @@ class Pawn : public Piece
             Position first_step_pos = get_proposed_pos(first_step_change);
             Position second_step_pos = get_proposed_pos(second_step_change);
 
-            std::cout<<first_step_pos<<"\n";
-            std::cout<<second_step_pos<<"\n";
-            std::cout<<left_take_pos<<"\n";
-            std::cout<<right_take_pos<<"\n";
-
             if(allow_double_move)
             {
 
                 if(board->is_empty(first_step_pos) && board->is_empty(second_step_pos))
-                    moves.push_back(Move{pos, Position{pos.x, pos.y + 2}});
+                    moves.push_back(Move{pos, second_step_pos});
             }
 
             if(board->is_empty(first_step_pos))
-                moves.push_back(Move{pos, Position{pos.x, pos.y + 1}});
+                moves.push_back(Move{pos, first_step_pos});
 
             if(!board->is_empty(left_take_pos) && board->get_color(left_take_pos) != color)
             {
-                Move next_move{pos, Position{left_take_pos}};
+                Move next_move{pos, left_take_pos};
                 next_move.disallow_double_move();
                 moves.push_back(next_move);
             }
@@ -68,10 +63,10 @@ class Pawn : public Piece
         {
             first_step_change = Vector2d<int>{0, -1};
             second_step_change = Vector2d<int>{0, -2};
-            left_take_change = Vector2d<int>{1, -1};
-            right_take_change = Vector2d<int>{1, 1};
-            left_en_passant_change = Vector2d<int>{};
-            right_en_passant_change = Vector2d<int>{};
+            left_take_change = Vector2d<int>{1, 1};
+            right_take_change = Vector2d<int>{-1, 1};
+            left_en_passant_change = Vector2d<int>{1, 1};
+            right_en_passant_change = Vector2d<int>{-1, 1};
         }
 
     private:

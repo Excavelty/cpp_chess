@@ -2,17 +2,17 @@
 #include<string>
 #include<exception>
 
-class NoMoveAllowed : public std::exception
+class NoMoveAllowedException : public std::exception
 {
     public:
-        NoMoveAllowed(const std::string& text) : err_text{text}
+        NoMoveAllowedException(const char* text) : err_text{text}
         {}
 
-        const char* what() const noexcept()
+        const char* what() const noexcept
         {
             return err_text;
         }
 
     private:
         const char* err_text;
-}
+};
