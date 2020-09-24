@@ -20,6 +20,11 @@ class Pawn : public Piece
             Position first_step_pos = get_proposed_pos(first_step_change);
             Position second_step_pos = get_proposed_pos(second_step_change);
 
+            std::cout<<first_step_pos<<"\n";
+            std::cout<<second_step_pos<<"\n";
+            std::cout<<left_take_pos<<"\n";
+            std::cout<<right_take_pos<<"\n";
+
             if(allow_double_move)
             {
 

@@ -19,8 +19,9 @@ class Game
             init_knights();
             init_queens();
             init_bishops();
-            for(const auto& piece : pieces)
+            for(const auto& piece : pieces) //important
             {
+                piece->set_board(board);
                 std::cout<<piece->get_sign()<<" "<<piece->get_pos()<<"\n";
             }
         }
