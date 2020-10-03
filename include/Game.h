@@ -64,6 +64,9 @@ class Game
                         for(const auto& move : allowed_moves)
                             std::cout<<move<<"\n";
 
+                        if(move.is_take())
+                            remove_taken_piece(move.next);
+
                         piece->set_pos(move.next);
                         board->move(move.previous, move.next);
                         board->print();
@@ -152,6 +155,14 @@ class Game
             std::shared_ptr<Queen> white_queen{new Queen{'Q', "d1"}};
             pieces.push_back(black_queen);
             pieces.push_back(white_queen);
+        }
+
+        void remove_taken_piece(const Position& pos)
+        {
+            auto iter = std::find_if(pieces.begin(), pieces.end(), 
+              [&pos] (const auto& piece) { return piece->get_pos() == pos; });
+            
+            pieces.erase(iter);
         }
 
     private:

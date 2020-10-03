@@ -19,8 +19,19 @@ class Knight : public Piece //work on knight validation
             auto iterator = moves.begin();
             while(iterator != moves.end())
             {
-                if(!knight_field_validation(moves[iterator - moves.begin()].next))
-                    moves.erase(iterator);
+                int counter = iterator - moves.begin();
+                bool field_empty = board->is_empty(moves[counter].next);
+                bool piece_to_take = false;
+
+                if(!field_empty)
+                {
+                    piece_to_take = board->get_color(moves[counter].next) != color;   
+                    if(piece_to_take)
+                        moves[counter].set_take_flag();
+                }
+
+                if(!field_empty && !piece_to_take)
+                    moves.erase(moves.begin() + counter);
 
                 ++iterator;
             }
@@ -29,8 +40,4 @@ class Knight : public Piece //work on knight validation
         }
 
     private:
-        bool knight_field_validation(const Position& possible_pos) const
-        {
-            return (board->is_empty(possible_pos) || (board->get_color(possible_pos) != color)); 
-        }
 };

@@ -19,7 +19,14 @@ public:
         return (previous == move.previous && next == move.next);
     }
 
-    inline void disallow_double_move() { double_move = false;}
+    inline void disallow_double_move() { double_move_flag = false; }
+    
+    inline void set_take_flag(bool val = true)
+    {
+        take_flag = val;
+    }
+
+    inline bool is_take() const { return take_flag; } 
 
 
 public:
@@ -27,11 +34,11 @@ public:
     Position next;
     
 private:
-    bool is_take = false;
-    bool is_check = false;
-    bool is_check_mate = false;
-    bool double_move = true;
-    bool en_passant = false;
+    bool take_flag = false;
+    bool check_flag = false;
+    bool check_mate_flag = false;
+    bool double_move_flag = true;
+    bool en_passant_flag = false;
 };
 
 inline std::ostream& operator << (std::ostream& out, const Move& move)
