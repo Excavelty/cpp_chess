@@ -14,6 +14,16 @@ public:
 
     }
 
+    static Move GetMoveFromString(const std::string& move_str)
+    {
+        Position current_pos{move_str.substr(0, 2)};
+        Position next_pos{move_str.substr(2, 2)};
+
+        Move move{current_pos, next_pos};
+
+        return move;
+    }
+
     bool operator == (const Move& move) const
     {
         return (previous == move.previous && next == move.next);
@@ -21,7 +31,7 @@ public:
 
     inline void disallow_double_move() { double_move_flag = false; }
     
-    inline void set_take_flag(bool val = true)
+    inline void set_take_flag(bool val)
     {
         take_flag = val;
     }

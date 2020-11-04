@@ -53,6 +53,14 @@ class Piece
             return sign;
         }
 
+        static void PrintMovesVector(std::vector<Move> moves, const std::string& header)
+        {
+            std::cout<<header<<"\n";
+
+            for(const auto& move : moves)
+                std::cout<<move<<"\n";
+        }
+
     protected:
 
         bool piece_on_board(const Position& pos) const
@@ -78,6 +86,29 @@ class Piece
         {
             int converted_x_pos = static_cast<int>(pos.x);
             return Position{static_cast<char>(converted_x_pos + change_vector.x), pos.y + change_vector.y};
+        }
+
+        bool piece_to_take_has_different_color(const Position& pos) const
+        {
+            return (board->get_color(pos) != color);
+        }
+
+        bool pieceToTakeHasSameColor(const Position& pos) const
+        {
+            return !piece_to_take_has_different_color(pos);
+        }
+
+        void delete_moves_finishing_on_ally_piece(std::vector<Move>& moves) const
+        {
+            for(unsigned i = 0; i < moves.size();)
+            {
+                Position nextPos = moves[i].next;
+
+                if(board->is_not_empty(nextPos) && pieceToTakeHasSameColor(pos))
+                    moves.erase(moves.begin() + i);
+
+                else ++i;
+            }
         }
 
     protected:

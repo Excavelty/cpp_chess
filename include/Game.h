@@ -20,11 +20,8 @@ class Game
             init_knights();
             init_queens();
             init_bishops();
-            for(const auto& piece : pieces) //important
-            {
-                piece->set_board(board);
-                std::cout<<piece->get_sign()<<" "<<piece->get_pos()<<" "<<piece->get_color()<<"\n";
-            }
+
+            set_board_for_pieces();
         }
 
         void loop()
@@ -33,56 +30,13 @@ class Game
             while(true)
             {
                 std::cin>>move_str;
-                if(move_str == "exit")
+                if(check_if_should_exit(move_str))
                 {
-                    std::cout<<"Game was finished!"<<"\n";
+                    print_on_exit_message();
                     break;
                 }
                 
-                else 
-                {
-                    Position current_pos{move_str.substr(0, 2)};
-                    Position next_pos{move_str.substr(2, 2)};
-
-                    Move move{current_pos, next_pos};
-                    auto piece_iterator = std::find_if(pieces.begin(), pieces.end(), 
-                      [&current_pos](const auto& el) { return el->get_pos() == current_pos; });
-
-                    try
-                    {
-                        if(piece_iterator == pieces.end())
-                            throw NoPieceFoundException{};
-
-                        std::shared_ptr<Piece> piece = pieces[piece_iterator - pieces.begin()];    
-                        std::vector<Move> allowed_moves = piece->get_allowed_moves();
-                        auto move_iterator = std::find(allowed_moves.begin(), allowed_moves.end(), move);
-
-                        if(move_iterator == allowed_moves.end())
-                            throw NoMoveAllowedException{"This move is not allowed!"};
-
-                        std::cout<<"Possible moves: \n";
-                        for(const auto& move : allowed_moves)
-                            std::cout<<move<<"\n";
-
-                        if(move.is_take())
-                            remove_taken_piece(move.next);
-
-                        piece->set_pos(move.next);
-                        board->move(move.previous, move.next);
-                        board->print();
-                    }
-
-                    catch(const NoPieceFoundException& exception)
-                    {
-                        std::cout<<exception.what()<<"\n";
-                        std::cout<<current_pos;
-                    }
-
-                    catch(const NoMoveAllowedException& exception)
-                    {
-                        std::cout<<exception.what()<<"\n";
-                    }
-                }
+                else proceed_move(move_str);
             }
         }
 
@@ -163,6 +117,92 @@ class Game
               [&pos] (const auto& piece) { return piece->get_pos() == pos; });
             
             pieces.erase(iter);
+            board->clean_field(pos);
+        }
+
+        void set_board_for_pieces()
+        {
+            for(auto& piece : pieces)
+                piece->set_board(board);
+        }
+
+        void print_pieces() const
+        {
+            for(const auto& piece : pieces) //important
+            {
+                std::cout<<piece->get_sign()<<" "<<piece->get_pos()<<" "<<piece->get_color()<<"\n";
+            }
+        }
+
+        bool check_if_move_allowed(std::vector<std::shared_ptr<Piece>>::iterator piece_iterator, const Move& move, 
+                                   std::shared_ptr<Piece> piece)
+        {    
+            std::vector<Move> allowed_moves = piece->get_allowed_moves();
+            auto move_iterator = std::find(allowed_moves.begin(), allowed_moves.end(), move);
+
+            if(move_iterator == allowed_moves.end())
+                throw NoMoveAllowedException{"This move is not allowed!"};
+
+            Piece::PrintMovesVector(allowed_moves, "Possible moves: ");
+            return true;
+        }
+
+        bool check_if_should_exit(const std::string& str)
+        {
+            return (str == "exit");
+        }
+
+        void proceed_move(const std::string& move_str)
+        {
+             Position current_pos{move_str.substr(0, 2)};
+             Move move = Move::GetMoveFromString(move_str);
+
+            auto piece_iterator = std::find_if(pieces.begin(), pieces.end(), 
+                [&current_pos](const auto& el) { return el->get_pos() == current_pos; });
+
+            try
+            {
+                try_to_finalize_move(piece_iterator, move);
+            }
+
+            catch(const NoPieceFoundException& exception)
+            {
+                std::cout<<exception.what()<<"\n";
+                std::cout<<current_pos;
+            }
+
+            catch(const NoMoveAllowedException& exception)
+            {
+                std::cout<<exception.what()<<"\n";
+            }
+        }
+
+        void try_to_finalize_move(std::vector<std::shared_ptr<Piece>>::iterator piece_iterator, const Move& move)
+        {
+            if(piece_iterator == pieces.end())
+                throw NoPieceFoundException{};
+
+            std::shared_ptr<Piece> piece = pieces[piece_iterator - pieces.begin()];
+
+            if(check_if_move_allowed(piece_iterator, move, piece))
+                execute_move_with_piece(piece, move);
+        }
+
+        void execute_move_with_piece(std::shared_ptr<Piece> piece, const Move& move)
+        {
+            if(move.is_take())
+                remove_taken_piece(move.next);
+
+            piece->set_pos(move.next);
+            board->move(move.previous, move.next);
+                                    
+            //print_pieces();
+            board->print();
+        }
+
+        void print_on_exit_message()
+        {
+            std::cout<<"Game was finished!"<<"\n";
         }
 
     private:

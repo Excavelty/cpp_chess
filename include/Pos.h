@@ -32,5 +32,5 @@ struct Position
 
 inline std::ostream& operator << (std::ostream& out, const Position& pos)
 {
-    return out<<pos.x<<" "<<pos.y<<" ";
+    return out<<std::string{pos.x}<<" "<<pos.y<<" ";
 }

@@ -14,10 +14,20 @@ class Board
             init_board();
         }
 
+        void clean_field(const Position& pos)
+        {
+            fields[pos.x - 'a'][pos.y - 1] = ' ';
+        }
+
         bool is_empty(const Position& pos) const
         {
             std::cout<<pos.x - 'a'<<" "<<pos.y - 1<<"\n";
             return fields[pos.x - 'a'][pos.y - 1] == '-';
+        }
+
+        bool is_not_empty(const Position& pos) const
+        {
+            return !is_empty(pos);
         }
 
         int get_color(const Position& pos) const //use wisely, no control if field is empty

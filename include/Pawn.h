@@ -14,35 +14,9 @@ class Pawn : public Piece
         std::vector<Move> get_allowed_moves() const final //remember about checking if on board etc
         {
             std::vector<Move> moves;
-            
-            Position left_take_pos = get_proposed_pos(left_take_change);
-            Position right_take_pos = get_proposed_pos(right_take_change);
-            Position first_step_pos = get_proposed_pos(first_step_change);
-            Position second_step_pos = get_proposed_pos(second_step_change);
 
-            if(allow_double_move)
-            {
-
-                if(board->is_empty(first_step_pos) && board->is_empty(second_step_pos))
-                    moves.push_back(Move{pos, second_step_pos});
-            }
-
-            if(board->is_empty(first_step_pos))
-                moves.push_back(Move{pos, first_step_pos});
-
-            if(!board->is_empty(left_take_pos) && board->get_color(left_take_pos) != color)
-            {
-                Move next_move{pos, left_take_pos};
-                next_move.disallow_double_move();
-                moves.push_back(next_move);
-            }
-
-            if(!board->is_empty(right_take_pos) && board->get_color(right_take_pos) != color) //en passant later
-            {
-                Move next_move{pos, Position{right_take_pos}};
-                next_move.disallow_double_move();
-                moves.push_back(next_move);
-            }
+            add_straight_moves_to_allowed(moves);
+            add_take_moves_to_allowed(moves);
 
             return moves;
         }
@@ -67,6 +41,47 @@ class Pawn : public Piece
             right_take_change = Vector2d<int>{-1, 1};
             left_en_passant_change = Vector2d<int>{1, 1};
             right_en_passant_change = Vector2d<int>{-1, 1};
+        }
+
+        void add_straight_moves_to_allowed(std::vector<Move>& moves) const
+        {
+            
+            Position first_step_pos = get_proposed_pos(first_step_change);
+            Position second_step_pos = get_proposed_pos(second_step_change);
+
+            if(allow_double_move && board->is_empty(first_step_pos) && board->is_empty(second_step_pos))
+            {
+                add_single_pawn_move_to_allowed(moves, first_step_pos);
+            }
+
+            if(board->is_empty(first_step_pos))
+            {
+                add_single_pawn_move_to_allowed(moves, second_step_pos);
+            }
+        }
+
+        void add_take_moves_to_allowed(std::vector<Move>& moves) const
+        {
+            Position left_take_pos = get_proposed_pos(left_take_change);
+            Position right_take_pos = get_proposed_pos(right_take_change);
+
+            if(board->is_not_empty(left_take_pos) && piece_to_take_has_different_color(left_take_pos))
+            {
+                add_single_pawn_move_to_allowed(moves, left_take_pos);
+            }
+
+            if(board->is_not_empty(right_take_pos) && piece_to_take_has_different_color(right_take_pos)) //en passant later
+            {
+                add_single_pawn_move_to_allowed(moves, right_take_pos);
+            }
+
+        }
+
+        void add_single_pawn_move_to_allowed(std::vector<Move>& moves, const Position& next_pos) const
+        {
+                Move next_move{pos, next_pos};
+                next_move.disallow_double_move();
+                moves.push_back(next_move);
         }
 
     private:
