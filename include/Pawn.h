@@ -5,92 +5,92 @@
 class Pawn : public Piece
 {
     public:
-        Pawn(const char sign, const std::string& init_pos) : Piece{sign, init_pos}
+        Pawn(const char sign, const std::string& initPos) : Piece{sign, initPos}
         {
             if(color == Color::BLACK)
-                reverse_change_vectors();
+                reverseChangeVectors();
         }
 
-        std::vector<Move> get_allowed_moves() const final //remember about checking if on board etc
+        std::vector<Move> getAllowedMoves() const override final //remember about checking if on board etc
         {
             std::vector<Move> moves;
 
-            add_straight_moves_to_allowed(moves);
-            add_take_moves_to_allowed(moves);
+            addStraightMovesToAllowed(moves);
+            addTakeMovesToAllowed(moves);
 
             return moves;
         }
 
-        void disable_double_move()
+        void disableDoubleMove()
         {
-            allow_double_move = false;        
+            allowDoubleMove = false;        
         }
 
-        void set_en_passant_status(bool status)
+        void setEnPassantStatus(bool status)
         {
-            allow_en_passant = status;
+            allowEnPassant = status;
         }
 
     private:
 
-        void reverse_change_vectors()
+        void reverseChangeVectors()
         {
-            first_step_change = Vector2d<int>{0, -1};
-            second_step_change = Vector2d<int>{0, -2};
-            left_take_change = Vector2d<int>{1, 1};
-            right_take_change = Vector2d<int>{-1, 1};
-            left_en_passant_change = Vector2d<int>{1, 1};
-            right_en_passant_change = Vector2d<int>{-1, 1};
+            firstStepChange = Vector2d<int>{0, -1};
+            secondStepChange = Vector2d<int>{0, -2};
+            leftTakeChange = Vector2d<int>{1, 1};
+            rightTakeChange = Vector2d<int>{-1, 1};
+            leftEnPassantChange = Vector2d<int>{1, 1};
+            rightEnPassantChange = Vector2d<int>{-1, 1};
         }
 
-        void add_straight_moves_to_allowed(std::vector<Move>& moves) const
+        void addStraightMovesToAllowed(std::vector<Move>& moves) const
         {
             
-            Position first_step_pos = get_proposed_pos(first_step_change);
-            Position second_step_pos = get_proposed_pos(second_step_change);
+            Position firstStepPos = getProposedPos(firstStepChange);
+            Position secondStepPos = getProposedPos(secondStepChange);
 
-            if(allow_double_move && board->is_empty(first_step_pos) && board->is_empty(second_step_pos))
+            if(allowDoubleMove && board->isEmpty(firstStepPos) && board->isEmpty(secondStepPos))
             {
-                add_single_pawn_move_to_allowed(moves, first_step_pos);
+                addSinglePawnMoveToAllowed(moves, firstStepPos);
             }
 
-            if(board->is_empty(first_step_pos))
+            if(board->isEmpty(firstStepPos))
             {
-                add_single_pawn_move_to_allowed(moves, second_step_pos);
+                addSinglePawnMoveToAllowed(moves, secondStepPos);
             }
         }
 
-        void add_take_moves_to_allowed(std::vector<Move>& moves) const
+        void addTakeMovesToAllowed(std::vector<Move>& moves) const
         {
-            Position left_take_pos = get_proposed_pos(left_take_change);
-            Position right_take_pos = get_proposed_pos(right_take_change);
+            Position leftTakePos = getProposedPos(leftTakeChange);
+            Position rightTakePos = getProposedPos(rightTakeChange);
 
-            if(board->is_not_empty(left_take_pos) && piece_to_take_has_different_color(left_take_pos))
+            if(board->isNotEmpty(leftTakePos) && pieceToTakeHasDifferentColor(leftTakePos))
             {
-                add_single_pawn_move_to_allowed(moves, left_take_pos);
+                addSinglePawnMoveToAllowed(moves, leftTakePos);
             }
 
-            if(board->is_not_empty(right_take_pos) && piece_to_take_has_different_color(right_take_pos)) //en passant later
+            if(board->isNotEmpty(rightTakePos) && pieceToTakeHasDifferentColor(rightTakePos)) //en passant later
             {
-                add_single_pawn_move_to_allowed(moves, right_take_pos);
+                addSinglePawnMoveToAllowed(moves, rightTakePos);
             }
 
         }
 
-        void add_single_pawn_move_to_allowed(std::vector<Move>& moves, const Position& next_pos) const
+        void addSinglePawnMoveToAllowed(std::vector<Move>& moves, const Position& nextPos) const
         {
-                Move next_move{pos, next_pos};
-                next_move.disallow_double_move();
-                moves.push_back(next_move);
+                Move nextMove{pos, nextPos};
+                nextMove.disallowDoubleMove();
+                moves.push_back(nextMove);
         }
 
     private:
-        Vector2d<int> first_step_change{0, 1};
-        Vector2d<int> second_step_change{0, 2};
-        Vector2d<int> left_take_change{-1, 1};
-        Vector2d<int> right_take_change{1, 1};
-        Vector2d<int> left_en_passant_change{-1, -1};
-        Vector2d<int> right_en_passant_change{1, -1};
-        bool allow_en_passant = false;
-        bool allow_double_move = true;
+        Vector2d<int> firstStepChange{0, 1};
+        Vector2d<int> secondStepChange{0, 2};
+        Vector2d<int> leftTakeChange{-1, 1};
+        Vector2d<int> rightTakeChange{1, 1};
+        Vector2d<int> leftEnPassantChange{-1, -1};
+        Vector2d<int> rightEnPassantChange{1, -1};
+        bool allowEnPassant = false;
+        bool allowDoubleMove = true;
 };

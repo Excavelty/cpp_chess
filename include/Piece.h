@@ -21,34 +21,34 @@ class Piece
 
         virtual ~Piece() = default;
 
-        virtual std::vector<Move> get_allowed_moves() const = 0;
+        virtual std::vector<Move> getAllowedMoves() const = 0;
         
-        void set_pos(const Position& new_pos)
+        void setPos(const Position& new_pos)
         {
             pos = new_pos;
         }
 
-        void set_board(std::shared_ptr<Board> init_board)
+        void setBoard(std::shared_ptr<Board> init_board)
         {
             board = init_board;
         }
 
-        Position get_pos() const
+        Position getPos() const
         {
             return pos;
         }
 
-        std::string get_pos_as_string() const
+        std::string getPosAsString() const
         {
-            return pos.get_string();
+            return pos.getString();
         }
 
-        int get_color() const
+        int getColor() const
         {
             return color;
         }
 
-        char get_sign() const
+        char getSign() const
         {
             return sign;
         }
@@ -63,48 +63,48 @@ class Piece
 
     protected:
 
-        bool piece_on_board(const Position& pos) const
+        bool pieceOnBoard(const Position& pos) const
         {
             return (pos.x >= 'a' && pos.x <= 'h' && pos.y >=1 && pos.y <= 8);
         }
 
-        std::vector<Move> get_moves_from_change_vectors(std::vector<Vector2d<int>> change_vectors) const
+        std::vector<Move> getMovesFromChangeVectors(std::vector<Vector2d<int>> changeVectors) const
         {
             std::vector<Move> moves;
 
-            for(const auto& vector : change_vectors)
+            for(const auto& vector : changeVectors)
             {
-                Position possible_pos = get_proposed_pos(vector);
-                if(piece_on_board(possible_pos))
-                    moves.push_back(Move{pos, possible_pos});
+                Position possiblePos = getProposedPos(vector);
+                if(pieceOnBoard(possiblePos))
+                    moves.push_back(Move{pos, possiblePos});
             }
 
             return moves;
         }
 
-        Position get_proposed_pos(const Vector2d<int>& change_vector) const //think of it
+        Position getProposedPos(const Vector2d<int>& changeVector) const //think of it
         {
-            int converted_x_pos = static_cast<int>(pos.x);
-            return Position{static_cast<char>(converted_x_pos + change_vector.x), pos.y + change_vector.y};
+            int convertedXPos = static_cast<int>(pos.x);
+            return Position{static_cast<char>(convertedXPos + changeVector.x), pos.y + changeVector.y};
         }
 
-        bool piece_to_take_has_different_color(const Position& pos) const
+        bool pieceToTakeHasDifferentColor(const Position& pos) const
         {
-            return (board->get_color(pos) != color);
+            return (board->getColor(pos) != color);
         }
 
         bool pieceToTakeHasSameColor(const Position& pos) const
         {
-            return !piece_to_take_has_different_color(pos);
+            return !pieceToTakeHasDifferentColor(pos);
         }
 
-        void delete_moves_finishing_on_ally_piece(std::vector<Move>& moves) const
+        void deleteMovesFinishingOnAllyPiece(std::vector<Move>& moves) const
         {
             for(unsigned i = 0; i < moves.size();)
             {
                 Position nextPos = moves[i].next;
 
-                if(board->is_not_empty(nextPos) && pieceToTakeHasSameColor(pos))
+                if(board->isNotEmpty(nextPos) && pieceToTakeHasSameColor(pos))
                     moves.erase(moves.begin() + i);
 
                 else ++i;

@@ -21,7 +21,7 @@ struct Position
         return (x == pos.x && y == pos.y);
     }
 
-    std::string get_string() const
+    std::string getString() const
     {
         return std::string{x} + std::to_string(y);
     }

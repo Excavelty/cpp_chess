@@ -11,26 +11,26 @@ class Board
     public:
         Board()
         {
-            init_board();
+            initBoard();
         }
 
-        void clean_field(const Position& pos)
+        void cleanField(const Position& pos)
         {
             fields[pos.x - 'a'][pos.y - 1] = ' ';
         }
 
-        bool is_empty(const Position& pos) const
+        bool isEmpty(const Position& pos) const
         {
             std::cout<<pos.x - 'a'<<" "<<pos.y - 1<<"\n";
             return fields[pos.x - 'a'][pos.y - 1] == '-';
         }
 
-        bool is_not_empty(const Position& pos) const
+        bool isNotEmpty(const Position& pos) const
         {
-            return !is_empty(pos);
+            return !isEmpty(pos);
         }
 
-        int get_color(const Position& pos) const //use wisely, no control if field is empty
+        int getColor(const Position& pos) const //use wisely, no control if field is empty
         {
             return isupper(fields[pos.x - 'a'][pos.y - 1])? Color::WHITE : Color::BLACK;
         }
@@ -49,7 +49,7 @@ class Board
             std::cout<<"--------\n";
         }
 
-        bool is_move_allowed(const Move& move) const
+        bool isMoveAllowed(const Move& move) const
         {
             return true; // absolutely crutial, START HERE AND APPLY FOR EVERY PIECE
         }
@@ -80,13 +80,13 @@ class Board
             move(std::string{pos1.x} + std::to_string(pos1.y), std::string{pos2.x} + std::to_string(pos2.y));
         }
 
-        std::array<std::array<char, 8>, 8> get_board() 
+        std::array<std::array<char, 8>, 8> getBoard() 
         {
             return fields;
         }
 
     private:
-        void init_board()
+        void initBoard()
         {
             for(int i = 0; i < num; ++i)
                 for(int j = 0; j < num; ++j)

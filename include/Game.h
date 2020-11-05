@@ -14,14 +14,14 @@ class Game
 
         Game() : board{new Board}
         {
-            init_pawns();
-            init_rooks();
-            init_kings();
-            init_knights();
-            init_queens();
-            init_bishops();
+            initPawns();
+            initRooks();
+            initKings();
+            initKnights();
+            initQueens();
+            initBishops();
 
-            set_board_for_pieces();
+            setBoardForPieces();
         }
 
         void loop()
@@ -30,145 +30,145 @@ class Game
             while(true)
             {
                 std::cin>>move_str;
-                if(check_if_should_exit(move_str))
+                if(checkIfShouldExit(move_str))
                 {
-                    print_on_exit_message();
+                    printOnExitMessage();
                     break;
                 }
                 
-                else proceed_move(move_str);
+                else proceedMove(move_str);
             }
         }
 
     private:
-        void init_kings()
+        void initKings()
         {
-            std::shared_ptr<King> black_king{new King{'k', "e8"}};
-            std::shared_ptr<King> white_king{new King{'K', "e1"}};
-            pieces.push_back(black_king);
-            pieces.push_back(white_king);
+            std::shared_ptr<King> blackKing{new King{'k', "e8"}};
+            std::shared_ptr<King> whiteKing{new King{'K', "e1"}};
+            pieces.push_back(blackKing);
+            pieces.push_back(whiteKing);
         }
 
-        void init_pawns()
+        void initPawns()
         {
             for(int i = 0; i < size; ++i)
             {
-                char col_sign = 'a' + i;
-                std::shared_ptr<Pawn> black_pawn{new Pawn{'p', std::string{col_sign} + std::to_string(7)}};
-                std::shared_ptr<Pawn> white_pawn{new Pawn{'P', std::string{col_sign} + std::to_string(2)}};
-                pieces.push_back(black_pawn);
-                pieces.push_back(white_pawn);
+                char colSign = 'a' + i;
+                std::shared_ptr<Pawn> blackPawn{new Pawn{'p', std::string{colSign} + std::to_string(7)}};
+                std::shared_ptr<Pawn> whitePawn{new Pawn{'P', std::string{colSign} + std::to_string(2)}};
+                pieces.push_back(blackPawn);
+                pieces.push_back(whitePawn);
             }
         }
 
-        void init_rooks()
+        void initRooks()
         {
-            const std::string black_pos[] = {"a8", "h8"};
-            const std::string white_pos[] = {"a1", "h1"};
+            const std::string blackPos[] = {"a8", "h8"};
+            const std::string whitePos[] = {"a1", "h1"};
 
             for(int i = 0; i < 2; ++i)
             {
-                std::shared_ptr<Rook> black_rook{new Rook{'r', black_pos[i]}};
-                std::shared_ptr<Rook> white_rook{new Rook{'R', white_pos[i]}};
-                pieces.push_back(black_rook);
-                pieces.push_back(white_rook);
+                std::shared_ptr<Rook> blackRook{new Rook{'r', blackPos[i]}};
+                std::shared_ptr<Rook> whiteRook{new Rook{'R', whitePos[i]}};
+                pieces.push_back(blackRook);
+                pieces.push_back(whiteRook);
             }
         }
 
-        void init_bishops()
+        void initBishops()
         {
-            const std::string black_pos[] = {"c8", "f8"};
-            const std::string white_pos[] = {"c1", "f1"};
+            const std::string blackPos[] = {"c8", "f8"};
+            const std::string whitePos[] = {"c1", "f1"};
 
             for(int i = 0; i < 2; ++i)
             {
-                std::shared_ptr<Bishop> black_bishop{new Bishop{'b', black_pos[i]}};
-                std::shared_ptr<Bishop> white_bishop{new Bishop{'B', white_pos[i]}};
-                pieces.push_back(black_bishop);
-                pieces.push_back(white_bishop);
+                std::shared_ptr<Bishop> blackBishop{new Bishop{'b', blackPos[i]}};
+                std::shared_ptr<Bishop> whiteBishop{new Bishop{'B', whitePos[i]}};
+                pieces.push_back(blackBishop);
+                pieces.push_back(whiteBishop);
             }
         }
 
-        void init_knights()
+        void initKnights()
         {
-            const std::string black_pos[] = {"b8", "g8"};
-            const std::string white_pos[] = {"b1", "g1"};
+            const std::string blackPos[] = {"b8", "g8"};
+            const std::string whitePos[] = {"b1", "g1"};
 
              for(int i = 0; i < 2; ++i)
             {
-                std::shared_ptr<Knight> black_knight{new Knight{'n', black_pos[i]}};
-                std::shared_ptr<Knight> white_knight{new Knight{'N', white_pos[i]}};
-                pieces.push_back(black_knight);
-                pieces.push_back(white_knight);
+                std::shared_ptr<Knight> blackKnight{new Knight{'n', blackPos[i]}};
+                std::shared_ptr<Knight> whiteKnight{new Knight{'N', whitePos[i]}};
+                pieces.push_back(blackKnight);
+                pieces.push_back(whiteKnight);
             }
         }
 
-        void init_queens()
+        void initQueens()
         {
-            std::shared_ptr<Queen> black_queen{new Queen{'q', "d8"}};
-            std::shared_ptr<Queen> white_queen{new Queen{'Q', "d1"}};
-            pieces.push_back(black_queen);
-            pieces.push_back(white_queen);
+            std::shared_ptr<Queen> blackQueen{new Queen{'q', "d8"}};
+            std::shared_ptr<Queen> whiteQueen{new Queen{'Q', "d1"}};
+            pieces.push_back(blackQueen);
+            pieces.push_back(whiteQueen);
         }
 
-        void remove_taken_piece(const Position& pos)
+        void removeTakenPiece(const Position& pos)
         {
             auto iter = std::find_if(pieces.begin(), pieces.end(), 
-              [&pos] (const auto& piece) { return piece->get_pos() == pos; });
+              [&pos] (const auto& piece) { return piece->getPos() == pos; });
             
             pieces.erase(iter);
-            board->clean_field(pos);
+            board->cleanField(pos);
         }
 
-        void set_board_for_pieces()
+        void setBoardForPieces()
         {
             for(auto& piece : pieces)
-                piece->set_board(board);
+                piece->setBoard(board);
         }
 
-        void print_pieces() const
+        void printPieces() const
         {
             for(const auto& piece : pieces) //important
             {
-                std::cout<<piece->get_sign()<<" "<<piece->get_pos()<<" "<<piece->get_color()<<"\n";
+                std::cout<<piece->getSign()<<" "<<piece->getPos()<<" "<<piece->getColor()<<"\n";
             }
         }
 
-        bool check_if_move_allowed(std::vector<std::shared_ptr<Piece>>::iterator piece_iterator, const Move& move, 
+        bool checkIfMoveAllowed(std::vector<std::shared_ptr<Piece>>::iterator piece_iterator, const Move& move, 
                                    std::shared_ptr<Piece> piece)
         {    
-            std::vector<Move> allowed_moves = piece->get_allowed_moves();
-            auto move_iterator = std::find(allowed_moves.begin(), allowed_moves.end(), move);
+            std::vector<Move> allowedMoves = piece->getAllowedMoves();
+            auto moveIterator = std::find(allowedMoves.begin(), allowedMoves.end(), move);
 
-            if(move_iterator == allowed_moves.end())
+            if(moveIterator == allowedMoves.end())
                 throw NoMoveAllowedException{"This move is not allowed!"};
 
-            Piece::PrintMovesVector(allowed_moves, "Possible moves: ");
+            Piece::PrintMovesVector(allowedMoves, "Possible moves: ");
             return true;
         }
 
-        bool check_if_should_exit(const std::string& str)
+        bool checkIfShouldExit(const std::string& str)
         {
             return (str == "exit");
         }
 
-        void proceed_move(const std::string& move_str)
+        void proceedMove(const std::string& moveStr)
         {
-             Position current_pos{move_str.substr(0, 2)};
-             Move move = Move::GetMoveFromString(move_str);
+             Position currentPos{moveStr.substr(0, 2)};
+             Move move = Move::GetMoveFromString(moveStr);
 
-            auto piece_iterator = std::find_if(pieces.begin(), pieces.end(), 
-                [&current_pos](const auto& el) { return el->get_pos() == current_pos; });
+            auto pieceIterator = std::find_if(pieces.begin(), pieces.end(), 
+                [&currentPos](const auto& el) { return el->getPos() == currentPos; });
 
             try
             {
-                try_to_finalize_move(piece_iterator, move);
+                tryToFinalizeMove(pieceIterator, move);
             }
 
             catch(const NoPieceFoundException& exception)
             {
                 std::cout<<exception.what()<<"\n";
-                std::cout<<current_pos;
+                std::cout<<currentPos;
             }
 
             catch(const NoMoveAllowedException& exception)
@@ -177,30 +177,30 @@ class Game
             }
         }
 
-        void try_to_finalize_move(std::vector<std::shared_ptr<Piece>>::iterator piece_iterator, const Move& move)
+        void tryToFinalizeMove(std::vector<std::shared_ptr<Piece>>::iterator piece_iterator, const Move& move)
         {
             if(piece_iterator == pieces.end())
                 throw NoPieceFoundException{};
 
             std::shared_ptr<Piece> piece = pieces[piece_iterator - pieces.begin()];
 
-            if(check_if_move_allowed(piece_iterator, move, piece))
-                execute_move_with_piece(piece, move);
+            if(checkIfMoveAllowed(piece_iterator, move, piece))
+                executeMoveWithPiece(piece, move);
         }
 
-        void execute_move_with_piece(std::shared_ptr<Piece> piece, const Move& move)
+        void executeMoveWithPiece(std::shared_ptr<Piece> piece, const Move& move)
         {
-            if(move.is_take())
-                remove_taken_piece(move.next);
+            if(move.isTake())
+                removeTakenPiece(move.next);
 
-            piece->set_pos(move.next);
+            piece->setPos(move.next);
             board->move(move.previous, move.next);
                                     
             //print_pieces();
             board->print();
         }
 
-        void print_on_exit_message()
+        void printOnExitMessage()
         {
             std::cout<<"Game was finished!"<<"\n";
         }

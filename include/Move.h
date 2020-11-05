@@ -29,14 +29,14 @@ public:
         return (previous == move.previous && next == move.next);
     }
 
-    inline void disallow_double_move() { double_move_flag = false; }
+    inline void disallowDoubleMove() { double_move_flag = false; }
     
-    inline void set_take_flag(bool val)
+    inline void setTakeFlag(bool val)
     {
         take_flag = val;
     }
 
-    inline bool is_take() const { return take_flag; } 
+    inline bool isTake() const { return take_flag; } 
 
 
 public:
